@@ -58,8 +58,10 @@ class UserInfo:
             "user_name": self.name,
             "active_chip": data["active_chip"],
             "points": data["entry_history"]["points"],
+            "total_points": data['entry_history']['total_points'],
             "event_transfers": data["entry_history"]["event_transfers"],
             "event_transfers_cost": data["entry_history"]["event_transfers_cost"],
+            "bank":  data['entry_history']['bank'] / 10,
         }
         summary["pure_points"] = summary["points"] - summary["event_transfers_cost"]
         picks_info = self._get_picks_info(event_id)

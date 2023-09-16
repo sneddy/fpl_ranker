@@ -27,13 +27,12 @@ class LeaguesResearch:
         self.summary_dir = summary_dir
         os.makedirs(self.summary_dir, exist_ok=True)
         self.summary_path = os.path.join(self.summary_dir, f"summary.csv")
+        self.players_info = PlayerInfo()
+        self.user_storage = UserStorage(self.players_info)
 
     @cached_property
     def leagues_summary(self):
         summary_list = []
-        players_info = PlayerInfo()
-        user_storage = UserStorage(players_info)
-
         for league_id in self.leagues_list:
             league_info = LeagueInfo(league_id)
             league_name = self.names_mapping.get(
@@ -45,7 +44,7 @@ class LeaguesResearch:
             if os.path.exists(standings_fpath):
                 standings = pd.read_csv(standings_fpath)
             else:
-                standings = league_info.get_event_standings(self.event_id, user_storage)
+                standings = league_info.get_event_standings(self.event_id, self.user_storage)
                 standings.to_csv(standings_fpath)
 
             mvp_teams = standings.loc[
@@ -53,14 +52,16 @@ class LeaguesResearch:
             ]
             mvp_names = standings.loc[
                 standings.pure_points == standings["pure_points"].max(), "user_name"
-            ]
+            ].tolist()
+            mvp_names = [name.split()[0][0] + '. ' + name.split()[1] for name in mvp_names]
             league_summary = {
                 "league_name": league_name,
+                'n_teams': standings.shape[0],
                 "old_total_score": self.old_scores[league_name],
                 "new_score": standings["pure_points"].mean(),
                 "mvp_score": standings["pure_points"].max(),
                 "mvp_teams": ", ".join(mvp_teams.tolist()),
-                "mvp_names": ", ".join(mvp_names.tolist()),
+                "mvp_names": ", ".join(mvp_names),
             }
             summary_list.append(league_summary)
         summary_df = pd.DataFrame(summary_list)
