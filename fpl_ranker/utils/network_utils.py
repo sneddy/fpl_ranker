@@ -9,13 +9,17 @@ from tenacity import (Retrying, retry_if_exception_type, stop_after_attempt,
 def safe_request(url, n_retry=50):
     exceptions = (requests.exceptions.Timeout, ValueError, requests.exceptions.SSLError)
     for attempt in Retrying(
-            stop=stop_after_attempt(n_retry),
-            wait=wait_fixed(10),
-            retry=retry_if_exception_type(exceptions),
-            reraise=True,
+        stop=stop_after_attempt(n_retry),
+        wait=wait_fixed(3),
+        retry=retry_if_exception_type(exceptions),
+        reraise=True,
     ):
         with attempt:
             response = requests.get(url, verify=False)
             if response.status_code != 200:
-                raise ValueError(f"Unexpected status code: {response.status_code} during {request_type}")
+                raise ValueError(f"Unexpected status code: {response.status_code}")
             return response.json()
+
+
+def url_join(*urls) -> str:
+    return "/".join(url.strip("/") for url in urls)
