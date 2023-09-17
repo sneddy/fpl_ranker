@@ -31,3 +31,6 @@ pip install -r requirements.txt
 python -m fpl_ranker.scripts.run_event
 ```
 
+### Examples
+![League Gameweek Overview](misc/examples/standings_dsml.png)
+![League Comparison](misc/examples/standings.png)
