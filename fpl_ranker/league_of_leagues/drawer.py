@@ -60,10 +60,10 @@ class ImageDrawer():
         draw.text(text_position, 'Forwards', fill=title_color, font=default_font)
 
         # draw leaderboard
-        for idx, row in event_df.sort_values('total_points').iterrows():
+        for idx, row in event_df.iterrows():
             # position
             text_position = (20, leaderboard_top_margin + idx * item_height)
-            draw.text(text_position, str(idx), fill=score_color, font=default_font)
+            draw.text(text_position, str(idx + 1), fill=score_color, font=default_font)
             # team name
             text_position = (50, leaderboard_top_margin + idx * item_height)
             user_name = transliterate.translit(row['user_name'], "ru", reversed=True)
@@ -102,7 +102,7 @@ class ImageDrawer():
     def draw_league_of_leagues(self, leagues_summary):
         img = self._get_template()
         
-        mega_title_font = ImageFont.truetype(self.font_path, 40)
+        # mega_title_font = ImageFont.truetype(self.font_path, 40)
         default_font = ImageFont.truetype(self.font_path, 16)
         title_font = ImageFont.truetype(self.font_path, 20)
         
@@ -112,24 +112,26 @@ class ImageDrawer():
         
         draw = ImageDraw.Draw(img)
         text_position = (80, 100)
-        draw.text(text_position, 'League of leagues by average score', fill=team_color, font=mega_title_font)
+        # draw.text(text_position, 'League of leagues by average score', fill=team_color, font=mega_title_font)
 
         # draw titles
-        title_top_margin = 200
+        title_top_margin = 160
         text_position = (110, title_top_margin)
         draw.text(text_position, 'League', fill=title_color, font=title_font)
-        text_position = (290, title_top_margin)
+        text_position = (270, title_top_margin)
+        draw.text(text_position, 'Teams', fill=title_color, font=title_font)
+        text_position = (360, title_top_margin)
         draw.text(text_position, 'GW4', fill=title_color, font=title_font)
-        text_position = (370, title_top_margin)
+        text_position = (450, title_top_margin)
         draw.text(text_position, 'Total', fill=title_color, font=title_font)
-        text_position = (570, title_top_margin)
+        text_position = (620, title_top_margin)
         draw.text(text_position, 'MVP', fill=title_color, font=title_font)
-        text_position = (750, title_top_margin)
+        text_position = (760, title_top_margin)
         draw.text(text_position, 'MVPScore', fill=title_color, font=title_font)
         
         # draw leaderboard
-        leaderboard_top_margin = 250
-        for idx, row in leagues_summary.iterrows():
+        leaderboard_top_margin = 210
+        for idx, row in leagues_summary.sort_values('new_total_score', ascending=False).reset_index(drop=True).iterrows():
             # position
             text_position = (20, leaderboard_top_margin + idx * 50)
             old_team_position = row['old_position']
@@ -145,14 +147,17 @@ class ImageDrawer():
             # league name
             text_position = (125, leaderboard_top_margin + idx * 50)
             draw.text(text_position, row['league_name'], fill=team_color, font=default_font)
-            # new score
+            # n_teams
             text_position = (300, leaderboard_top_margin + idx * 50)
+            draw.text(text_position, str(row['n_teams']), fill=score_color, font=default_font)
+            # new score
+            text_position = (370, leaderboard_top_margin + idx * 50)
             draw.text(text_position, str(row['new_score']), fill=score_color, font=default_font)
             # new total
-            text_position = (390, leaderboard_top_margin + idx * 50)
+            text_position = (450, leaderboard_top_margin + idx * 50)
             draw.text(text_position, str(row['new_total_score']), fill=score_color, font=default_font)
             # mvp names
-            text_position = (490, leaderboard_top_margin + idx * 50)
+            text_position = (540, leaderboard_top_margin + idx * 50)
             draw.text(text_position, str(row['mvp_names']), fill=score_color, font=default_font)
             # mvp scores
             text_position = (815, leaderboard_top_margin + idx * 50)
