@@ -60,7 +60,7 @@ class ImageDrawer():
         draw.text(text_position, 'Forwards', fill=title_color, font=default_font)
 
         # draw leaderboard
-        for idx, row in event_df.iterrows():
+        for idx, row in event_df.sort_values('total_points', ascending=False).reset_index(drop=True).iterrows():
             # position
             text_position = (20, leaderboard_top_margin + idx * item_height)
             draw.text(text_position, str(idx + 1), fill=score_color, font=default_font)
@@ -120,8 +120,8 @@ class ImageDrawer():
         draw.text(text_position, 'League', fill=title_color, font=title_font)
         text_position = (270, title_top_margin)
         draw.text(text_position, 'Teams', fill=title_color, font=title_font)
-        text_position = (360, title_top_margin)
-        draw.text(text_position, 'GW4', fill=title_color, font=title_font)
+        text_position = (370, title_top_margin)
+        draw.text(text_position, 'GW', fill=title_color, font=title_font)
         text_position = (450, title_top_margin)
         draw.text(text_position, 'Total', fill=title_color, font=title_font)
         text_position = (620, title_top_margin)

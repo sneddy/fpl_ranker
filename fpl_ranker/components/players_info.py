@@ -39,10 +39,16 @@ class PlayerInfo:
         )
         return player_info
 
-    @property
+    @cached_property
     def id2name_dict(self):
         return self.summary.name.to_dict()
+    
+    @cached_property
+    def name2id_dict(self):
+        return {name: idx for idx, name in self.id2name_dict.items()}
 
-    @property
+    def get_pos_by_name(self, name: str):
+        return self.id2pos_dict[self.name2id_dict[name]]
+    @cached_property
     def id2pos_dict(self):
         return self.summary.position.to_dict()
